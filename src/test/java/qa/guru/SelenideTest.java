@@ -1,0 +1,70 @@
+package qa.guru;
+
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.Allure;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.openqa.selenium.By;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.codeborne.selenide.CollectionCondition.texts;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selectors.withText;
+import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$$;
+import static io.qameta.allure.Allure.step;
+import static org.openqa.selenium.By.linkText;
+
+public class SelenideTest {
+
+    public static final String REPOSITORY = "allure-framework/allure2";
+    public static final String ISSUE = "2893";
+
+
+    @Test
+    public void testLambdaStep(){
+        SelenideLogger.addListener("allure", new AllureSelenide());
+
+        step("Открываем главную страницу", () -> {
+            open("https://github.com");
+        });
+
+        step("Ищем репозиторий " + REPOSITORY, () -> {
+            $(".header-search-button").click();
+            $("#query-builder-test").setValue(REPOSITORY);
+            $("#query-builder-test").submit();
+        });
+
+        step("Кликаем по ссылке репозитория " + REPOSITORY, () -> {
+            $(linkText(REPOSITORY)).click();
+        });
+
+        step("Открываем таб Issues" + REPOSITORY, () -> {
+            $("#issues-tab").click();
+        });
+
+        step("Проверяем наличие Issues с номером" + ISSUE, () -> {
+            $(withText(ISSUE)).should(exist);
+        });
+
+    }
+
+    @Test
+    public void testAnnotatedSteps() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+        WebSteps steps = new WebSteps();
+
+        steps.openMainPage();
+        steps.searchForRepository(REPOSITORY);
+        steps.clickOnRepositoryLink(REPOSITORY);
+        steps.openIssuesTab();
+        steps.shouldSeeIssueWithNumber(ISSUE);
+    }
+
+}

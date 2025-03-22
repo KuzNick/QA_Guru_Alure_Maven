@@ -1,5 +1,3 @@
-package qa.guru;
-
 import com.codeborne.selenide.WebDriverRunner;
 
 import io.qameta.allure.Attachment;
@@ -43,10 +41,20 @@ public class WebSteps {
         $(withText(issue)).should(exist);
     }
 
-    @Attachment(value = "Screenshot", type = "image/png", fileExtension = "png")
-    public byte[] takeScreenshot() {
+//    @Attachment(value = "Screenshot", type = "image/png", fileExtension = "png")
+//    public byte[] takeScreenshot() {
+//        System.out.println("Делаем скриншот");
+//        return ((TakesScreenshot) WebDriverRunner.getWebDriver()).getScreenshotAs(OutputType.BYTES);
+//    }
 
-        return ((TakesScreenshot) WebDriverRunner.getWebDriver()).getScreenshotAs(OutputType.BYTES);
+    @Attachment(value = "Screenshot", type = "image/jpeg", fileExtension = "jpeg")
+    public byte[] takeScreenshot() {
+        // Проверяем, что WebDriver запущен
+        if (WebDriverRunner.hasWebDriverStarted()) {
+            // Делаем скриншот и возвращаем его как массив байтов
+            return ((TakesScreenshot) WebDriverRunner.getWebDriver()).getScreenshotAs(OutputType.BYTES);
+        }
+        return new byte[0]; // Возвращаем пустой массив, если WebDriver не запущен
     }
 }
 

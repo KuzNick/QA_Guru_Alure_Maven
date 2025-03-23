@@ -11,13 +11,14 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <aspectj.version>1.9.20.1</aspectj.version> <!-- Убедитесь, что версия AspectJ указана здесь -->
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
-            <version>4.18.1</version>
+            <artifactId>selenium-java</artifactId>
+            <version>4.29.0</version>
         </dependency>
         <!-- JUnit 5 -->
         <dependency>
@@ -48,17 +49,6 @@
             <artifactId>assertj-core</artifactId>
             <version>3.24.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.18.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.18.1</version>
-        </dependency>
         <!-- Selenide (если используете) -->
         <dependency>
             <groupId>com.codeborne</groupId>
@@ -76,10 +66,19 @@
                 <version>3.1.2</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <!-- Указываем каталог для результатов Allure -->
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </systemPropertyVariables>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>1.9.20.1</version> <!-- Указываем версию явно -->
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!-- Allure Maven Plugin -->
@@ -90,11 +89,8 @@
                 <configuration>
                     <reportVersion>2.24.0</reportVersion>
                     <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
-                    <reportDirectory>${project.build.directory}/reports/allure-report</reportDirectory>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 </project>
-
-
